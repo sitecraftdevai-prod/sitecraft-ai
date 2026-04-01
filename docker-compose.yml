@@ -1,0 +1,145 @@
+services:
+  # API Gateway
+  api-gateway:
+    build: ./gateway
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./gateway:/app
+      - /app/node_modules
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - PROJECT_SERVICE_URL=http://project-service:5002
+      - CHAT_SERVICE_URL=http://chat-service:5003
+      - AI_SERVICE_URL=http://ai-service:5004
+    command: npx nodemon index.js
+    depends_on:
+      - auth-service
+      - project-service
+      - chat-service
+      - ai-service
+
+  # Auth Service
+  auth-service:
+    build: ./services/auth-service
+    volumes:
+      - ./services/auth-service:/app
+      - /app/node_modules
+    environment:
+      - PORT=5001
+      - PUBLIC_IP=192.198.0.103
+      - MONGO_URI=mongodb+srv://SiteCraft-Ai-db:wRg3MVPaRwbOP2pZ@cluster1.sgbdgtu.mongodb.net/sitecraft-auth?retryWrites=true&w=majority&appName=Cluster1
+      - JWT_SECRET=sitecraft_super_secret_key_123
+    command: npx nodemon index.js
+    depends_on:
+      - auth-db
+
+  # Project Service
+  project-service:
+    build: ./services/project-service
+    volumes:
+      - ./services/project-service:/app
+      - /app/node_modules
+    environment:
+      - PORT=5002
+      - MONGO_URI=mongodb+srv://SiteCraft-Ai-db:wRg3MVPaRwbOP2pZ@cluster1.sgbdgtu.mongodb.net/sitecraft-project?retryWrites=true&w=majority&appName=Cluster1
+      - JWT_SECRET=sitecraft_super_secret_key_123
+    command: npx nodemon index.js
+    depends_on:
+      - project-db
+
+  # Chat Service
+  chat-service:
+    build: ./services/chat-service
+    ports:
+      - "5003:5003" # Direct socket connection
+    volumes:
+      - ./services/chat-service:/app
+      - /app/node_modules
+    environment:
+      - PORT=5003
+      - MONGO_URI=mongodb+srv://SiteCraft-Ai-db:wRg3MVPaRwbOP2pZ@cluster1.sgbdgtu.mongodb.net/sitecraft-chat?retryWrites=true&w=majority&appName=Cluster1
+      - JWT_SECRET=sitecraft_super_secret_key_123
+    command: npx nodemon index.js
+    depends_on:
+      - chat-db
+
+  # AI Service
+  ai-service:
+    build: ./services/ai-service
+    volumes:
+      - ./services/ai-service:/app
+      - /app/node_modules
+    environment:
+      - PORT=5004
+      - MONGO_URI=mongodb+srv://SiteCraft-Ai-db:wRg3MVPaRwbOP2pZ@cluster1.sgbdgtu.mongodb.net/sitecraft-ai?retryWrites=true&w=majority&appName=Cluster1
+    command: npx nodemon index.js
+    depends_on:
+      - ai-db
+
+  # Databases
+  auth-db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - auth-data:/data/db
+
+  project-db:
+    image: mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - project-data:/data/db
+
+  chat-db:
+    image: mongo
+    ports:
+      - "27019:27017"
+    volumes:
+      - chat-data:/data/db
+
+  ai-db:
+    image: mongo
+    ports:
+      - "27020:27017"
+    volumes:
+      - ai-data:/data/db
+
+  # Client Website
+  client-web:
+    build: ./client-web
+    volumes:
+      - ./client-web:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    ports:
+      - "5173:5173"
+    stdin_open: true
+    tty: true
+    command: >-
+      sh -c "echo '\n🚀 CLIENT: http://localhost:5173\n' && npm run dev -- --host"
+
+  # Admin Website
+  admin-web:
+    build: ./admin-web
+    volumes:
+      - ./admin-web:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    ports:
+      - "5174:5173" # Map host 5174 to container 5173 (Vite default)
+    stdin_open: true
+    tty: true
+    command: >-
+      sh -c "echo '\n🛡️ ADMIN: http://localhost:5174\n' && npm run dev -- --host"
+
+volumes:
+  auth-data:
+  project-data:
+  chat-data:
+  ai-data:
