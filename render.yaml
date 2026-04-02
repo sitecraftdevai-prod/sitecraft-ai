@@ -97,7 +97,7 @@ services:
   # ---------------------------------------------------------
   
   # Client Website
-  - type: static
+  - type: static_site
     name: sitecraft-client-web
     env: static
     rootDir: client-web
@@ -115,7 +115,7 @@ services:
         value: 20
 
   # Admin Website
-  - type: static
+  - type: static_site
     name: sitecraft-admin-web
     env: static
     rootDir: admin-web
