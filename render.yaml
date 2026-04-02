@@ -6,6 +6,7 @@ services:
   # Auth Service
   - type: web
     name: sitecraft-auth-service
+    plan: free
     runtime: node
     rootDir: services/auth-service
     buildCommand: npm install
@@ -23,6 +24,7 @@ services:
   # Project Service
   - type: web
     name: sitecraft-project-service
+    plan: free
     runtime: node
     rootDir: services/project-service
     buildCommand: npm install
@@ -40,6 +42,7 @@ services:
   # Chat Service
   - type: web
     name: sitecraft-chat-service
+    plan: free
     runtime: node
     rootDir: services/chat-service
     buildCommand: npm install
@@ -57,6 +60,7 @@ services:
   # AI Service
   - type: web
     name: sitecraft-ai-service
+    plan: free
     runtime: node
     rootDir: services/ai-service
     buildCommand: npm install
@@ -74,6 +78,7 @@ services:
   # ---------------------------------------------------------
   - type: web
     name: sitecraft-api-gateway
+    plan: free
     runtime: node
     rootDir: gateway
     buildCommand: npm install
