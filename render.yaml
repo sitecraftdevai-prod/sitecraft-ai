@@ -6,7 +6,7 @@ services:
   # Auth Service
   - type: web
     name: sitecraft-auth-service
-    env: node
+    runtime: node
     rootDir: services/auth-service
     buildCommand: npm install
     startCommand: npm start
@@ -23,7 +23,7 @@ services:
   # Project Service
   - type: web
     name: sitecraft-project-service
-    env: node
+    runtime: node
     rootDir: services/project-service
     buildCommand: npm install
     startCommand: npm start
@@ -40,7 +40,7 @@ services:
   # Chat Service
   - type: web
     name: sitecraft-chat-service
-    env: node
+    runtime: node
     rootDir: services/chat-service
     buildCommand: npm install
     startCommand: npm start
@@ -57,7 +57,7 @@ services:
   # AI Service
   - type: web
     name: sitecraft-ai-service
-    env: node
+    runtime: node
     rootDir: services/ai-service
     buildCommand: npm install
     startCommand: npm start
@@ -74,7 +74,7 @@ services:
   # ---------------------------------------------------------
   - type: web
     name: sitecraft-api-gateway
-    env: node
+    runtime: node
     rootDir: gateway
     buildCommand: npm install
     startCommand: npm start
@@ -97,12 +97,12 @@ services:
   # ---------------------------------------------------------
   
   # Client Website
-  - type: static_site
+  - type: web
     name: sitecraft-client-web
-    env: static
+    runtime: static
     rootDir: client-web
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         fromService:
@@ -115,12 +115,12 @@ services:
         value: 20
 
   # Admin Website
-  - type: static_site
+  - type: web
     name: sitecraft-admin-web
-    env: static
+    runtime: static
     rootDir: admin-web
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         fromService:
